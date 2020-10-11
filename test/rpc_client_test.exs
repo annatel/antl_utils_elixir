@@ -1,4 +1,4 @@
-defmodule RpcClientTest do
+defmodule AntlUtilsElixir.RpcClientTest do
   use ExUnit.Case
   import ExUnit.CaptureLog
   alias AntlUtilsElixir.RpcClient
