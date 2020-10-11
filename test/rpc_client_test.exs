@@ -7,10 +7,10 @@ defmodule RpcClientTest do
   test "when node is down" do
     assert {:error, :nodedown} = RpcClient.call(:node, Kernel, :+, [1, 2])
 
-    assert capture_log(fn -> RpcClient.call(:node, Atom, :to_string, [:atom]) end) =~
-             "node - Elixir.Atom - to_string - [:atom]"
+    assert capture_log(fn -> RpcClient.call(:node, Kernel, :+, [1, 2]) end) =~
+             "node - Elixir.Kernel - + - [1, 2]"
 
-    assert capture_log(fn -> RpcClient.call(:node, Atom, :to_string, [:atom]) end) =~
+    assert capture_log(fn -> RpcClient.call(:node, Kernel, :+, [1, 2]) end) =~
              "{:badrpc, :nodedown}"
   end
 
@@ -29,10 +29,10 @@ defmodule RpcClientTest do
   test "when node is up " do
     assert 3 = RpcClient.call(@node, Kernel, :+, [1, 2])
 
-    assert capture_log(fn -> RpcClient.call(@node, Atom, :to_string, [:atom]) end) =~
-             "#{@node} - Elixir.Atom - to_string - [:atom]"
+    assert capture_log(fn -> RpcClient.call(@node, Kernel, :+, [1, 2]) end) =~
+             "#{@node} - Elixir.Kernel - + - [1, 2]"
 
-    assert capture_log(fn -> RpcClient.call(@node, Atom, :to_string, [:atom]) end) =~
+    assert capture_log(fn -> RpcClient.call(@node, Kernel, :+, [1, 2]) end) =~
              "3"
   end
 end
