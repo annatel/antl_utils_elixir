@@ -1,16 +1,17 @@
 defmodule RpcClientTest do
   use ExUnit.Case
   import ExUnit.CaptureLog
+  alias AntlUtilsElixir.RpcClient
 
   @node :"node1@127.0.0.1"
 
   test "when node is down" do
-    assert {:error, :nodedown} = RpcClient.call(:node, Kernel, :+, [1, 2])
+    assert {:error, :nodedown} = RpcClient.call(:unexisting_node, Kernel, :+, [1, 2])
 
-    assert capture_log(fn -> RpcClient.call(:node, Kernel, :+, [1, 2]) end) =~
+    assert capture_log(fn -> RpcClient.call(:unexisting_node, Kernel, :+, [1, 2]) end) =~
              "node - Elixir.Kernel - + - [1, 2]"
 
-    assert capture_log(fn -> RpcClient.call(:node, Kernel, :+, [1, 2]) end) =~
+    assert capture_log(fn -> RpcClient.call(:unexisting_node, Kernel, :+, [1, 2]) end) =~
              "{:badrpc, :nodedown}"
   end
 
