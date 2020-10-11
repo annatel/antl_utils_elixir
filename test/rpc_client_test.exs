@@ -1,6 +1,8 @@
 defmodule AntlUtilsElixir.RpcClientTest do
   use ExUnit.Case
+
   import ExUnit.CaptureLog
+
   alias AntlUtilsElixir.RpcClient
 
   @node :"node1@127.0.0.1"

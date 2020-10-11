@@ -1,21 +1,21 @@
 defmodule AntlUtilsElixir.RpcClient do
   @moduledoc "A tiny Rpc Client"
 
+  require Logger
+
   @doc """
   Executes functions on a remote node.
   Logs call and response.
 
   ## Examples
 
-    iex> AntlUtilsElixir.RpcClient.call(:node, Kernel, :+, [1, 2]))
-    3
-    iex> AntlUtilsElixir.RpcClient.call(:node, Kernel, :undefined_function, [1, 2]))
-    {:error, :failed}
+      iex> AntlUtilsElixir.RpcClient.call(:node, Kernel, :+, [1, 2])
+      3
+
+      iex> AntlUtilsElixir.RpcClient.call(:node, Kernel, :undefined_function, [1, 2])
+      {:error, :failed}
 
   """
-
-  require Logger
-
   @spec call(atom, atom, atom, [any]) :: any
   def call(remote_node, module, function_name, attributes)
       when is_atom(module) and is_atom(function_name) and is_list(attributes) do

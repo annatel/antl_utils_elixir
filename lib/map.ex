@@ -8,20 +8,20 @@ defmodule AntlUtilsElixir.Map do
 
   ## Examples
 
-    iex> %{key: "value", child: %{}} |> AntlUtilsElixir.Map.populate_child(:key, :child)
-    %{key: "value", child: %{key: "value"}}
+      iex> %{key: "value", child: %{}} |> AntlUtilsElixir.Map.populate_child(:key, :child)
+      %{key: "value", child: %{key: "value"}}
 
-    iex> %{key: "value", child: %{key: "old_value"}} |> AntlUtilsElixir.Map.populate_child(:key, :child)
-    %{key: "value", child: %{key: "value"}}
+      iex> %{key: "value", child: %{key: "old_value"}} |> AntlUtilsElixir.Map.populate_child(:key, :child)
+      %{key: "value", child: %{key: "value"}}
 
-    iex> %{key: "value", child: [%{}, %{}]} |> AntlUtilsElixir.Map.populate_child(:key, :child)
-    %{key: "value", child: [%{key: "value"}, %{key: "value"}]}
+      iex> %{key: "value", child: [%{}, %{}]} |> AntlUtilsElixir.Map.populate_child(:key, :child)
+      %{key: "value", child: [%{key: "value"}, %{key: "value"}]}
 
-    iex> %{key: "value", child: %{}} |> AntlUtilsElixir.Map.populate_child(:not_existing_key, :child)
-    %{key: "value", child: %{not_existing_key: nil}}
+      iex> %{key: "value", child: %{}} |> AntlUtilsElixir.Map.populate_child(:not_existing_key, :child)
+      %{key: "value", child: %{not_existing_key: nil}}
 
-    iex> %{key: "value", child: %{}} |> AntlUtilsElixir.Map.populate_child(:key, :not_existing_child)
-    %{key: "value", child: %{}}
+      iex> %{key: "value", child: %{}} |> AntlUtilsElixir.Map.populate_child(:key, :not_existing_child)
+      %{key: "value", child: %{}}
 
   """
   @spec populate_child(map, any, any) :: map
