@@ -69,7 +69,8 @@ defmodule AntlUtilsElixir.RpcClient do
 
   defp process_response(response), do: response
 
-  defp process_response!({:badrpc, :nodedown}), do: raise(AntlUtilsElixir.RpcClient.NodeDownError)
+  defp process_response!({:badrpc, :nodedown}),
+    do: raise(AntlUtilsElixir.RpcClient.NodeDownError, "unable to connect to node")
 
   defp process_response!({:badrpc, error}),
     do: raise(AntlUtilsElixir.RpcClient.BadCallError, inspect(error))
