@@ -210,7 +210,14 @@ defmodule AntlUtilsElixir.WildcardTest do
   end
 
   describe "valid_pattern?/1" do
-    test "when the expression contains two adjacent wildcards retun false" do
+
+    test "when the pattern is not valid_expr, return false" do
+      pattern = ".*.a"
+      refute Wildcard.valid_pattern?(pattern, @default_separator, @default_wildcard_char)
+
+    end
+
+    test "when the pattern contains two adjacent wildcards return false" do
       pattern = "*.*"
       refute Wildcard.valid_pattern?(pattern, @default_separator, @default_wildcard_char)
 
@@ -218,7 +225,7 @@ defmodule AntlUtilsElixir.WildcardTest do
       refute Wildcard.valid_pattern?(pattern, @default_separator, @default_wildcard_char)
     end
 
-    test "when the expression is valid, return true" do
+    test "when the pattern is valid, return true" do
       pattern = "a.b.c.*"
       assert Wildcard.valid_pattern?(pattern, @default_separator, @default_wildcard_char)
     end
