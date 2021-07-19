@@ -195,17 +195,17 @@ defmodule AntlUtilsElixir.WildcardTest do
   describe "valid_expr?/1" do
     test "when the expression contains two adjacent separators retun false" do
       expr = "a..b"
-      refute Wildcard.valid_expr?(expr, @default_separator)
+      refute Wildcard.valid_expr?(expr, @default_separator, @default_wildcard_char)
     end
 
     test "when the expression is ended with separator, return false" do
       expr = "a.b.c."
-      refute Wildcard.valid_expr?(expr, @default_separator)
+      refute Wildcard.valid_expr?(expr, @default_separator, @default_wildcard_char)
     end
 
     test "when the expression is valid, return true" do
       expr = "a.b.c"
-      assert Wildcard.valid_expr?(expr, @default_separator)
+      assert Wildcard.valid_expr?(expr, @default_separator, @default_wildcard_char)
     end
   end
 

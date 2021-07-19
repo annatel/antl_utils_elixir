@@ -11,20 +11,29 @@ defmodule AntlUtilsElixir.Wildcard do
     |> Regex.match?(plain_expr)
   end
 
-  def valid_expr?(expr, separator) do
-    expr_as_list = expr |> String.split(separator)
+  def valid_pattern?(pattern, separator, wildcard_char),
+    do:
+      valid_pattern_regex!(separator, wildcard_char)
+      |> Regex.match?(pattern)
 
-    expr_as_list
-    |> Enum.member?("")
-    |> Kernel.not()
+  def valid_expr?(expr, separator, wildcard_char),
+    do:
+      valid_expr_regex!(separator, wildcard_char)
+      |> Regex.match?(expr)
+
+  def valid_expr_regex!(separator, wildcard_char) do
+    ("^(?!" <> "\\#{separator}" <> ")")
+    |> Kernel.<>("(?!.*" <> "?" <> "\\#{separator}\\#{separator}" <> ")")
+    |> Kernel.<>("(?!.*" <> "\\#{wildcard_char}" <> ".*" <> ")")
+    |> Kernel.<>("(?!.*" <> "\\#{separator}$" <> ")")
+    |> Regex.compile!()
   end
 
-  def valid_pattern?(pattern, separator, wildcard_char) do
-    valid_expr?(pattern, separator) and
-      pattern
-      |> String.split(separator)
-      |> List.to_string()
-      |> Kernel.=~(wildcard_char <> wildcard_char)
-      |> Kernel.not()
+  def valid_pattern_regex!(separator, wildcard_char) do
+    "^(?!\\#{separator})"
+    |> Kernel.<>("(?!.*" <> "?" <> "\\#{separator}\\#{separator}" <> ")")
+    |> Kernel.<>("(?!.*" <> "\\#{wildcard_char}\\#{separator}\\#{wildcard_char}.*)")
+    |> Kernel.<>("(?!.*\\#{separator}$)")
+    |> Regex.compile!()
   end
 end
