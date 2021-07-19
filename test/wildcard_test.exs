@@ -210,11 +210,9 @@ defmodule AntlUtilsElixir.WildcardTest do
   end
 
   describe "valid_pattern?/1" do
-
     test "when the pattern is not valid_expr, return false" do
       pattern = ".*.a"
       refute Wildcard.valid_pattern?(pattern, @default_separator, @default_wildcard_char)
-
     end
 
     test "when the pattern contains two adjacent wildcards return false" do
