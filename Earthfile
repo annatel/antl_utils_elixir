@@ -12,7 +12,7 @@ deps:
     ENV MIX_ENV="$MIX_ENV"
     COPY mix.exs .
     COPY mix.lock .
-    RUN --ssh mix deps.get --only "$MIX_ENV"
+    RUN mix deps.get --only "$MIX_ENV"
     RUN mix deps.compile
 
 lint:
