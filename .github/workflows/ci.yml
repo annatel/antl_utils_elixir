@@ -23,5 +23,5 @@ jobs:
       - uses: actions/checkout@v2
       - name: Download released earthly
         run: "sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/download/v0.5.20/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
-      - name: Lint
+      - name: Test
         run: earthly -P --ci +test
