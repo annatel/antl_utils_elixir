@@ -52,32 +52,32 @@ defmodule AntlUtilsElixir.WildcardTest do
     end
   end
 
-  describe "valid_expr?/1" do
+  describe "expr_valid?/1" do
     test "when the expression is valid, returns true" do
-      assert Wildcard.valid_expr?("a.b.c", @separator, @wildcard_char)
+      assert Wildcard.expr_valid?("a.b.c", @separator, @wildcard_char)
     end
 
     test "when the expression contains two adjacent separators, retuns false" do
-      refute Wildcard.valid_expr?("a..b", @separator, @wildcard_char)
+      refute Wildcard.expr_valid?("a..b", @separator, @wildcard_char)
     end
 
     test "when the expression is ended with a separator, returns false" do
-      refute Wildcard.valid_expr?("a.b.c.", @separator, @wildcard_char)
+      refute Wildcard.expr_valid?("a.b.c.", @separator, @wildcard_char)
     end
   end
 
-  describe "valid_pattern?/1" do
+  describe "pattern_valid?/1" do
     test "when the pattern is valid, returns true" do
-      assert Wildcard.valid_pattern?("a.b.c.*", @separator, @wildcard_char)
+      assert Wildcard.pattern_valid?("a.b.c.*", @separator, @wildcard_char)
     end
 
     test "when the pattern is not valid_expr, returns false" do
-      refute Wildcard.valid_pattern?(".*.a", @separator, @wildcard_char)
+      refute Wildcard.pattern_valid?(".*.a", @separator, @wildcard_char)
     end
 
     test "when the pattern contains two adjacent wildcards, returns false" do
-      refute Wildcard.valid_pattern?("*.*", @separator, @wildcard_char)
-      refute Wildcard.valid_pattern?("a.*.*.b", @separator, @wildcard_char)
+      refute Wildcard.pattern_valid?("*.*", @separator, @wildcard_char)
+      refute Wildcard.pattern_valid?("a.*.*.b", @separator, @wildcard_char)
     end
   end
 end

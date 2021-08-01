@@ -14,19 +14,16 @@ defmodule AntlUtilsElixir.Wildcard do
     |> Regex.match?(plain_expr)
   end
 
-  @spec valid_pattern?(binary, binary, binary) :: boolean
-  def valid_pattern?(pattern, separator, wildcard_char),
-    do:
-      valid_pattern_regex!(separator, wildcard_char)
-      |> Regex.match?(pattern)
+  @spec pattern_valid?(binary, binary, binary) :: boolean
+  def pattern_valid?(pattern, separator, wildcard_char),
+    do: pattern_regex!(separator, wildcard_char) |> Regex.match?(pattern)
 
-  @spec valid_expr?(binary, binary, binary) :: boolean
-  def valid_expr?(expr, separator, wildcard_char),
-    do:
-      valid_expr_regex!(separator, wildcard_char)
-      |> Regex.match?(expr)
+  @spec expr_valid?(binary, binary, binary) :: boolean
+  def expr_valid?(expr, separator, wildcard_char),
+    do: expr_regex!(separator, wildcard_char) |> Regex.match?(expr)
 
-  defp valid_expr_regex!(separator, wildcard_char) do
+  @spec expr_regex!(binary, binary) :: Regex.t()
+  def expr_regex!(separator, wildcard_char) do
     ("^(?!" <> "\\#{separator}" <> ")")
     |> Kernel.<>("(?!.*" <> "?" <> "\\#{separator}\\#{separator}" <> ")")
     |> Kernel.<>("(?!.*" <> "\\#{wildcard_char}" <> ".*" <> ")")
@@ -34,7 +31,8 @@ defmodule AntlUtilsElixir.Wildcard do
     |> Regex.compile!()
   end
 
-  defp valid_pattern_regex!(separator, wildcard_char) do
+  @spec pattern_regex!(binary, binary) :: Regex.t()
+  def pattern_regex!(separator, wildcard_char) do
     "^(?!\\#{separator})"
     |> Kernel.<>("(?!.*" <> "?" <> "\\#{separator}\\#{separator}" <> ")")
     |> Kernel.<>("(?!.*" <> "\\#{wildcard_char}\\#{separator}\\#{wildcard_char}.*)")
