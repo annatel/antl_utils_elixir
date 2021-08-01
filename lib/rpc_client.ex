@@ -32,7 +32,7 @@ defmodule AntlUtilsElixir.RpcClient do
   end
 
   @doc """
-  Similar to `c:call/4` but raises if the call failed.
+  Similar to `call/4` but raises if the call failed.
 
   ## Examples
 
