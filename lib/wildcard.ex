@@ -9,7 +9,6 @@ defmodule AntlUtilsElixir.Wildcard do
     |> String.replace(wildcard_char, ".+")
     |> then(&("^" <> &1 <> "$"))
     |> Regex.compile!()
-    |> IO.inspect()
     |> Regex.match?(expr)
   end
 
