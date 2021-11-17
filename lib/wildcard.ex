@@ -4,14 +4,13 @@ defmodule AntlUtilsElixir.Wildcard do
   def match?(pattern, expr, separator, wildcard_char)
       when is_binary(pattern) and is_binary(expr) and is_binary(separator) and
              is_binary(wildcard_char) do
-    plain_expr = expr |> String.replace(separator, "")
-
     pattern
-    |> String.replace(separator, "")
+    |> String.replace(separator, "\\.")
     |> String.replace(wildcard_char, ".+")
     |> then(&("^" <> &1 <> "$"))
     |> Regex.compile!()
-    |> Regex.match?(plain_expr)
+    |> IO.inspect()
+    |> Regex.match?(expr)
   end
 
   @spec pattern_valid?(binary, binary, binary) :: boolean
