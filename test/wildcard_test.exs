@@ -14,11 +14,10 @@ defmodule AntlUtilsElixir.WildcardTest do
     test "with one wildcard" do
       assert Wildcard.match?("a.*", "a.b.c", @separator, @wildcard_char)
       refute Wildcard.match?("a.*", "b.b.c", @separator, @wildcard_char)
-      refute Wildcard.match?("a.*", "ab.b.c", @separator, @wildcard_char)
+      refute Wildcard.match?("a.*", "ab.b", @separator, @wildcard_char)
       assert Wildcard.match?("*.c", "a.b.c", @separator, @wildcard_char)
       refute Wildcard.match?("*.c", "a.b.b", @separator, @wildcard_char)
-      refute Wildcard.match?("*.c", "a.b.d.e.fc", @separator, @wildcard_char)
-      refute Wildcard.match?("*.c", "a.b.d.e.fc", @separator, @wildcard_char)
+      refute Wildcard.match?("*.c", "e.fc", @separator, @wildcard_char)
     end
 
     test "with two non-adjacent anchors" do
