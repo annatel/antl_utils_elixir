@@ -8,6 +8,7 @@ defmodule AntlUtilsElixir.WildcardTest do
 
   describe "match?/4" do
     test "when the expr match the pattern" do
+      assert Wildcard.match?("+", "aa", @separator, @wildcard_char)
       assert Wildcard.match?("+.bb.cc", "aa.bb.cc", @separator, @wildcard_char)
       assert Wildcard.match?("aa.+.cc", "aa.bb.cc", @separator, @wildcard_char)
       assert Wildcard.match?("aa.bb.+", "aa.bb.cc", @separator, @wildcard_char)
@@ -17,6 +18,7 @@ defmodule AntlUtilsElixir.WildcardTest do
     end
 
     test "when the expr number of topics doesnt match the pattern number of topics " do
+      refute Wildcard.match?("+", "aa.bb", @separator, @wildcard_char)
       refute Wildcard.match?("aa.+", "aa.bb.cc", @separator, @wildcard_char)
       refute Wildcard.match?("aa.+", "aa", @separator, @wildcard_char)
     end
