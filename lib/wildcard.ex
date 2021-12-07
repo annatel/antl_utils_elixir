@@ -24,7 +24,7 @@ defmodule AntlUtilsElixir.Wildcard do
         expr |> String.graphemes() |> Enum.count(&(&1 == separator))
 
   @spec pattern_regex!(binary) :: Regex.t()
-  def pattern_regex!(separator) do
+  defp pattern_regex!(separator) do
     "^(?!\\#{separator})"
     |> Kernel.<>("(?!.*" <> "?" <> "\\#{separator}\\#{separator}" <> ")")
     |> Kernel.<>("(?!.*\\#{separator}$)")
