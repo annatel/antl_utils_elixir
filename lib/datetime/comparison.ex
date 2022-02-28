@@ -80,6 +80,22 @@ defmodule AntlUtilsElixir.DateTime.Comparison do
   end
 
   @doc ~S"""
+  Returns whether datetime1 is equal to datetime2
+
+  ## Examples
+
+      iex> Comparison.eq?(DateTime.from_naive!(~N[2018-01-02 00:00:00], "Etc/UTC"), DateTime.from_naive!(~N[2018-01-01 00:00:00], "Etc/UTC"))
+      false
+
+      iex> Comparison.eq?(DateTime.from_naive!(~N[2018-01-01 00:00:00], "Etc/UTC"), DateTime.from_naive!(~N[2018-01-01 00:00:00], "Etc/UTC"))
+      true
+  """
+  @spec eq?(DateTime.t(), DateTime.t()) :: boolean()
+  def eq?(%DateTime{} = dt1, %DateTime{} = dt2) do
+    DateTime.compare(dt1, dt2) == :eq
+  end
+
+  @doc ~S"""
   Returns the min date between datetime1 and datetime2
 
   ## Examples
