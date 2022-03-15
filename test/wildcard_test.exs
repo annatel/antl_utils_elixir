@@ -10,7 +10,7 @@ defmodule AntlUtilsElixir.WildcardTest do
     test "when the expr match the pattern" do
       assert Wildcard.match?("+", "aa", @separator, @wildcard_char)
       assert Wildcard.match?("+.bb.cc", "aa.bb.cc", @separator, @wildcard_char)
-      assert Wildcard.match?("aa.+.cc", "aa.bb.cc", @separator, @wildcard_char)
+      assert Wildcard.match?("aa.+.cc", "aa.+bb.cc", @separator, @wildcard_char)
       assert Wildcard.match?("aa.bb.+", "aa.bb.cc", @separator, @wildcard_char)
       assert Wildcard.match?("aa.+.+", "aa.bb.cc", @separator, @wildcard_char)
       assert Wildcard.match?("+.+.cc", "aa.bb.cc", @separator, @wildcard_char)
@@ -31,6 +31,9 @@ defmodule AntlUtilsElixir.WildcardTest do
   describe "expr_valid?/1" do
     test "when the expression is valid, return true" do
       assert Wildcard.expr_valid?("a.b.c", @separator, @wildcard_char)
+      assert Wildcard.expr_valid?("aa.+bb.cc", @separator, @wildcard_char)
+      assert Wildcard.expr_valid?("+aa.+bb.+cc", @separator, @wildcard_char)
+      assert Wildcard.expr_valid?("aa+.bb+.cc+", @separator, @wildcard_char)
     end
 
     test "when the expression is invalid, retun false" do
@@ -38,6 +41,9 @@ defmodule AntlUtilsElixir.WildcardTest do
       refute Wildcard.expr_valid?("aa..bb", @separator, @wildcard_char)
       refute Wildcard.expr_valid?(".aa", @separator, @wildcard_char)
       refute Wildcard.expr_valid?("aa.+", @separator, @wildcard_char)
+      refute Wildcard.expr_valid?("aa.bb.+", @separator, @wildcard_char)
+      refute Wildcard.expr_valid?("aa.+.cc", @separator, @wildcard_char)
+      refute Wildcard.expr_valid?("+.bb.cc", @separator, @wildcard_char)
     end
   end
 
