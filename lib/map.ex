@@ -39,4 +39,25 @@ defmodule AntlUtilsElixir.Map do
         x
     end)
   end
+
+  @doc """
+    Puts the given value under key in map. if fun is truthy.
+
+
+  ## Examples
+
+      iex> %{} |> AntlUtilsElixir.Map.maybe_put(:key, "value")
+      %{key: "value"}
+
+      iex> %{} |> AntlUtilsElixir.Map.maybe_put(:key, nil)
+      %{}
+
+      iex> %{} |> AntlUtilsElixir.Map.maybe_put(:key, "value1", &(&1 in ["value1", "value2"]))
+      %{key: "value1"}
+
+  """
+  @spec maybe_put(map, any, any, (any -> boolean)) :: map
+  def maybe_put(map, key, value, fun \\ &(not is_nil(&1))) when is_function(fun, 1) do
+    if fun.(value), do: map |> Map.put(key, value), else: map
+  end
 end
