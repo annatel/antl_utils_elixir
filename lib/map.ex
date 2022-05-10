@@ -41,8 +41,7 @@ defmodule AntlUtilsElixir.Map do
   end
 
   @doc """
-    Puts the given value under key in map. if fun is truthy.
-
+  Puts the given value under key if fun is truthy.
 
   ## Examples
 
