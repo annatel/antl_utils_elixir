@@ -14,7 +14,7 @@ The package can be installed by adding `antl_utils_elixir` to your list of depen
 ```elixir
 def deps do
   [
-    {:antl_utils_elixir, "~> 1.1.0"}
+    {:antl_utils_elixir, "~> 1.3.0"}
   ]
 end
 ```

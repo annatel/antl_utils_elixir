@@ -39,7 +39,9 @@ defmodule AntlUtilsElixir.Wildcard do
   def expr_regex!(separator, wildcard_char) do
     ("^(?!" <> "\\#{separator}" <> ")")
     |> Kernel.<>("(?!.*" <> "?" <> "\\#{separator}\\#{separator}" <> ")")
-    |> Kernel.<>("(?!.*" <> "\\#{wildcard_char}" <> ".*" <> ")")
+    |> Kernel.<>("(?!^" <> "\\#{wildcard_char}\\#{separator}" <> ")")
+    |> Kernel.<>("(?!.*" <> "\\#{separator}\\#{wildcard_char}\\#{separator}" <> ".*" <> ")")
+    |> Kernel.<>("(?!.*" <> "\\#{separator}\\#{wildcard_char}" <> "$" <> ")")
     |> Kernel.<>("(?!.*" <> "\\#{separator}$" <> ")")
     |> Regex.compile!()
   end
