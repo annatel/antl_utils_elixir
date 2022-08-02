@@ -166,8 +166,6 @@ defmodule AntlUtilsElixir.URI.QueryTest do
   test "raise plug exception on bad www-form" do
     message = ~r/invalid www-form encoding on query-string, got %R2%9P%93/
 
-    assert_raise ArgumentError, message, fn ->
-      decode("_utf8=%R2%9P%93")
-    end
+    assert_raise ArgumentError, message, fn -> decode("_utf8=%R2%9P%93") end
   end
 end
