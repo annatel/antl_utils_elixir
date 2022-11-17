@@ -91,7 +91,7 @@ defmodule AntlUtilsElixir.Map do
     Map.new(map, fn
       {key, val} when is_atom(key) or is_binary(key) ->
         new_key = transform_function.(key)
-        new_val = if is_map(val), do: transform_keys(val, transform_function), else: val
+        new_val = if is_map(val) and not is_struct(val), do: transform_keys(val, transform_function), else: val
         {new_key, new_val}
     end)
   end

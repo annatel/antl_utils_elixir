@@ -4,7 +4,7 @@ defmodule AntlUtilsElixir.MapTest do
 
   import AntlUtilsElixir.Map
 
-  defmodule Whatever, do: defstruct([])
+  defmodule Whatever, do: defstruct(anything: 42)
 
   describe "atomize_keys" do
     test "non map crashes" do
@@ -51,6 +51,13 @@ defmodule AntlUtilsElixir.MapTest do
     test "string and atom keys of multi level map are all atomized" do
       old = %{"one" => 1, :two => %{:three => 3, "four" => 4}}
       new = %{one: 1, two: %{three: 3, four: 4}}
+
+      assert atomize_keys(old) == new
+    end
+
+    test "maps with struct values are not considered multilevel" do
+      old = %{"one" => 1, :two => %Whatever{}}
+      new = %{one: 1, two: %Whatever{}}
 
       assert atomize_keys(old) == new
     end
@@ -107,6 +114,13 @@ defmodule AntlUtilsElixir.MapTest do
     test "string and atom keys of multi level map are all stringified" do
       old = %{"one" => 1, :two => %{:three => 3, "four" => 4}}
       new = %{"one" => 1, "two" => %{"three" => 3, "four" => 4}}
+
+      assert stringify_keys(old) == new
+    end
+
+    test "maps with struct values are not considered multilevel" do
+      old = %{"one" => 1, :two => %Whatever{}}
+      new = %{"one" => 1, "two" => %Whatever{}}
 
       assert stringify_keys(old) == new
     end
