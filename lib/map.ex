@@ -59,4 +59,40 @@ defmodule AntlUtilsElixir.Map do
   def maybe_put(map, key, value, fun) when is_function(fun, 1) do
     if fun.(value), do: map |> Map.put(key, value), else: map
   end
+
+  @doc """
+  Set all keys in a map and all included maps to atoms recursively. The keys in the input map must be either atoms or strings.
+
+  ### Examples
+
+  iex> AntlUtilsElixir.Map.atomize_keys(%{"a" => 1, :b => 2, nil => %{true => 3}})
+  %{a: 1, b: 2, nil: %{true: 3}}
+  """
+  @spec atomize_keys(map) :: map
+  def atomize_keys(map) do
+    transform_keys(map, fn key -> if is_binary(key), do: String.to_atom(key), else: key end)
+  end
+
+  @doc """
+  Set all keys in a map and all included maps to strings recursively. The keys in the input map must be either atoms or strings.
+
+  ### Examples
+
+  iex> AntlUtilsElixir.Map.stringify_keys(%{"a" => 1, :b => 2, nil => %{true => 3}})
+  %{"a" => 1, "b" => 2, "nil" => %{"true" => 3}}
+  """
+  @spec stringify_keys(map) :: map
+  def stringify_keys(map) do
+    transform_keys(map, fn key -> if is_atom(key), do: Atom.to_string(key), else: key end)
+  end
+
+  @spec transform_keys(map, function) :: map
+  defp transform_keys(map, transform_function) when is_map(map) and not is_struct(map) do
+    Map.new(map, fn
+      {key, val} when is_atom(key) or is_binary(key) ->
+        new_key = transform_function.(key)
+        new_val = if is_map(val), do: transform_keys(val, transform_function), else: val
+        {new_key, new_val}
+    end)
+  end
 end
