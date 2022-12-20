@@ -86,8 +86,16 @@ defmodule AntlUtilsElixir.Map do
     transform_keys(map, fn key -> if is_atom(key), do: Atom.to_string(key), else: key end)
   end
 
+  @doc """
+  Set all keys in a map and all included maps to the result of the passed function recursively. The keys in the input map must be either atoms or strings.
+
+  ### Examples
+
+  iex> AntlUtilsElixir.Map.transform_keys(%{"a" => 1, "B" => 2, "CdCd" => %{"E" => 3}}, &Macro.underscore(&1))
+  %{"a" => 1, "b" => 2, "cd_cd" => %{"e" => 3}}
+  """
   @spec transform_keys(map, function) :: map
-  defp transform_keys(map, transform_function) when is_map(map) and not is_struct(map) do
+  def transform_keys(map, transform_function) when is_map(map) and not is_struct(map) do
     Map.new(map, fn
       {key, val} when is_atom(key) or is_binary(key) ->
         new_key = transform_function.(key)
