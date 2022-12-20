@@ -183,7 +183,7 @@ defmodule AntlUtilsElixir.MapTest do
 
     test "maps with struct values are not considered multilevel" do
       old = %{"One" => 1, "two_two" => %Whatever{}}
-      new = %{"One" => 1, "TwoTwo" =>  %Whatever{}}
+      new = %{"One" => 1, "TwoTwo" => %Whatever{}}
 
       assert transform_keys(old, &Macro.camelize(&1)) == new
     end
@@ -194,5 +194,4 @@ defmodule AntlUtilsElixir.MapTest do
       assert_raise FunctionClauseError, fn -> transform_keys(%{%{} => 1}, &Macro.camelize(&1)) end
     end
   end
-
 end
