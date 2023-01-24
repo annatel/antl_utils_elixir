@@ -23,7 +23,8 @@ defmodule AntlUtilsElixir.MixProject do
 
   defp deps do
     [
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+      {:luhn, "~> 0.3"}
     ]
   end
 
