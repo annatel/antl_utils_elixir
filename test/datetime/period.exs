@@ -19,6 +19,11 @@ defmodule AntlUtilsElixir.DateTime.PeriodTest do
       assert Period.get_status(%{start_at: @datetime1, end_at: nil}, @datetime2) == :ongoing
     end
 
+    test "aa" do
+      assert Period.get_status(%{aa: @datetime1, vv: @datetime3}, @datetime2) ==
+               :ongoing
+    end
+
     test ":ended" do
       assert Period.get_status(%{start_at: @datetime1, end_at: @datetime2}, @datetime3) == :ended
 
