@@ -44,7 +44,7 @@ defmodule AntlUtilsElixir.DateTime.Period do
     |> get_status(datetime)
   end
 
-  @spec get_status(t, DateTime.t()) :: :ended | :ongoing | :scheduled
+  @spec get_status(t | struct(), DateTime.t()) :: :ended | :ongoing | :scheduled
   def get_status(%{start_at: start_at, end_at: end_at}, %DateTime{} = datetime) do
     comparaison_with_start_at = DateTime.compare(datetime, start_at)
 
