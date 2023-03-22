@@ -4,7 +4,9 @@ defmodule AntlUtilsElixir.DateTime.Period do
   """
   alias AntlUtilsElixir.DateTime.Comparison
 
-  @type t :: %{start_at: nil | DateTime.t(), end_at: nil | DateTime.t()}
+  @type t ::
+          %{start_at: nil | DateTime.t(), end_at: nil | DateTime.t()}
+          | %{:struct => atom(), start_at: nil | DateTime.t(), end_at: nil | DateTime.t()}
 
   @spec included?(map, map, atom, atom) :: boolean
   def included?(a, b, start_at_key, end_at_key)
