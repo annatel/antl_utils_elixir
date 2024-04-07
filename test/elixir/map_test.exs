@@ -13,7 +13,6 @@ defmodule AntlUtilsElixir.MapTest do
       assert_raise FunctionClauseError, fn -> atomize_keys("anything") end
       assert_raise FunctionClauseError, fn -> atomize_keys(42) end
       assert_raise FunctionClauseError, fn -> atomize_keys({}) end
-      assert_raise FunctionClauseError, fn -> atomize_keys([]) end
     end
 
     test "struct crashes" do
@@ -62,6 +61,10 @@ defmodule AntlUtilsElixir.MapTest do
       assert atomize_keys(old) == new
     end
 
+    test "list of maps" do
+      assert atomize_keys(%{"f" => [%{"g" => 4}]}) == %{f: [%{g: 4}]}
+    end
+
     test "map with non string or atom keys crash" do
       assert_raise FunctionClauseError, fn -> atomize_keys(%{1 => 1}) end
       assert_raise FunctionClauseError, fn -> atomize_keys(%{{} => 1}) end
@@ -76,7 +79,6 @@ defmodule AntlUtilsElixir.MapTest do
       assert_raise FunctionClauseError, fn -> stringify_keys("anything") end
       assert_raise FunctionClauseError, fn -> stringify_keys(42) end
       assert_raise FunctionClauseError, fn -> stringify_keys({}) end
-      assert_raise FunctionClauseError, fn -> stringify_keys([]) end
     end
 
     test "struct crashes" do
@@ -125,6 +127,10 @@ defmodule AntlUtilsElixir.MapTest do
       assert stringify_keys(old) == new
     end
 
+    test "list of maps" do
+      assert stringify_keys(%{f: [%{g: 4}]}) == %{"f" => [%{"g" => 4}]}
+    end
+
     test "map with non string or atom keys crash" do
       assert_raise FunctionClauseError, fn -> stringify_keys(%{1 => 1}) end
       assert_raise FunctionClauseError, fn -> stringify_keys(%{{} => 1}) end
@@ -139,7 +145,6 @@ defmodule AntlUtilsElixir.MapTest do
       assert_raise FunctionClauseError, fn -> transform_keys("anything", &Macro.camelize(&1)) end
       assert_raise FunctionClauseError, fn -> transform_keys(42, &Macro.camelize(&1)) end
       assert_raise FunctionClauseError, fn -> transform_keys({}, &Macro.camelize(&1)) end
-      assert_raise FunctionClauseError, fn -> transform_keys([], &Macro.camelize(&1)) end
     end
 
     test "struct crashes" do
@@ -186,6 +191,12 @@ defmodule AntlUtilsElixir.MapTest do
       new = %{"One" => 1, "TwoTwo" => %Whatever{}}
 
       assert transform_keys(old, &Macro.camelize(&1)) == new
+    end
+
+    test "list of maps" do
+      assert transform_keys(%{"four_four" => [%{"five_five" => 4}]}, &Macro.camelize(&1)) == %{
+               "FourFour" => [%{"FiveFive" => 4}]
+             }
     end
 
     test "map with non string or atom keys crash" do
