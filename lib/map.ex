@@ -91,8 +91,8 @@ defmodule AntlUtilsElixir.Map do
 
   ### Examples
 
-  iex> AntlUtilsElixir.Map.transform_keys(%{"a" => 1, "B" => 2, "CdCd" => %{"E" => 3}, "FiFi" => [%{"g" => 4}]}, &Macro.underscore(&1))
-  %{"a" => 1, "b" => 2, "cd_cd" => %{"e" => 3}, "fi_fi" => [%{"g" => 4}]}
+  iex> AntlUtilsElixir.Map.transform_keys(%{"a" => 1, "B" => 2, "CdCd" => %{"E" => 3}, "FiFi" => [%{"g" => 4}, "a", "b"]}, &Macro.underscore(&1))
+  %{"a" => 1, "b" => 2, "cd_cd" => %{"e" => 3}, "fi_fi" => [%{"g" => 4}, "a", "b"]}
   """
   @spec transform_keys(map | list, function) :: map
 
@@ -100,19 +100,22 @@ defmodule AntlUtilsElixir.Map do
     Map.new(map, fn
       {key, val} when is_atom(key) or is_binary(key) ->
         new_key = transform_function.(key)
-
-        new_val =
-          if (is_map(val) or is_list(val)) and not is_struct(val),
-            do: transform_keys(val, transform_function),
-            else: val
-
+        new_val = do_transform_keys(val, transform_function)
         {new_key, new_val}
     end)
   end
 
-  def transform_keys(list, transform_function) when is_list(list) do
+  def do_transform_keys(map, transform_function) when is_map(map) and not is_struct(map) do
+    transform_keys(map, transform_function)
+  end
+
+  def do_transform_keys(list, transform_function) when is_list(list) do
     Enum.map(list, fn elem ->
-      transform_keys(elem, transform_function)
+      do_transform_keys(elem, transform_function)
     end)
+  end
+
+  def do_transform_keys(val, _) do
+    val
   end
 end
