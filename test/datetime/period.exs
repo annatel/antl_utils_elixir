@@ -33,6 +33,26 @@ defmodule AntlUtilsElixir.DateTime.PeriodTest do
     end
   end
 
+  test "ongoing?" do
+    assert Period.ongoing?(%{start_at: @datetime1, end_at: @datetime3}, @datetime2)
+
+    assert Period.ongoing?(%{start_at: @datetime1, end_at: @datetime2}, @datetime1)
+
+    assert Period.ongoing?(%{start_at: @datetime1, end_at: nil}, @datetime2)
+  end
+
+  test "ended?" do
+    assert Period.ended?(%{start_at: @datetime1, end_at: @datetime2}, @datetime3)
+
+    assert Period.ended?(%{start_at: @datetime1, end_at: @datetime2}, @datetime2)
+  end
+
+  test "scheduled?" do
+    assert Period.scheduled?(%{start_at: @datetime2, end_at: @datetime3}, @datetime1)
+
+    assert Period.scheduled?(%{start_at: @datetime2, end_at: nil}, @datetime1)
+  end
+
   describe "get_status/4" do
     test "can accept different key name for start_at and end_at" do
       assert Period.get_status(

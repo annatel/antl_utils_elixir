@@ -74,6 +74,21 @@ defmodule AntlUtilsElixir.DateTime.Period do
     end
   end
 
+  @spec ongoing?(t, DateTime.t()) :: boolean()
+  def ongoing?(%{start_at: _, end_at: _} = elem, %DateTime{} = datetime) do
+    get_status(elem, datetime) == :ongoing
+  end
+
+  @spec scheduled?(t, DateTime.t()) :: boolean()
+  def scheduled?(%{start_at: _, end_at: _} = elem, %DateTime{} = datetime) do
+    get_status(elem, datetime) == :scheduled
+  end
+
+  @spec ended?(t, DateTime.t()) :: boolean()
+  def ended?(%{start_at: _, end_at: _} = elem, %DateTime{} = datetime) do
+    get_status(elem, datetime) == :ended
+  end
+
   @spec filter_by_status([t], atom() | [atom()], DateTime.t(), atom, atom) :: [any]
   def filter_by_status(
         periods,
