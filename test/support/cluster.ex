@@ -5,7 +5,7 @@ defmodule AntlUtilsElixir.Cluster do
 
     # Allow spawned nodes to fetch all code from this node
     :erl_boot_server.start([])
-    allow_boot(to_charlist("127.0.0.1"))
+    allow_boot(~c"127.0.0.1")
 
     nodes
     |> Enum.map(&Task.async(fn -> spawn_node(&1) end))
@@ -13,7 +13,13 @@ defmodule AntlUtilsElixir.Cluster do
   end
 
   defp spawn_node(node_host) do
-    {:ok, node} = :slave.start(to_charlist("127.0.0.1"), node_name(node_host), inet_loader_args())
+    {:ok, _pid, node} =
+      :peer.start(%{
+        host: ~c"127.0.0.1",
+        name: node_name(node_host),
+        args: inet_loader_args_list()
+      })
+
     add_code_paths(node)
     transfer_configuration(node)
     ensure_applications_started(node)
@@ -24,8 +30,15 @@ defmodule AntlUtilsElixir.Cluster do
     :rpc.block_call(node, module, function, args)
   end
 
-  defp inet_loader_args do
-    to_charlist("-loader inet -hosts 127.0.0.1 -setcookie #{:erlang.get_cookie()}")
+  defp inet_loader_args_list do
+    [
+      ~c"-loader",
+      ~c"inet",
+      ~c"-hosts",
+      ~c"127.0.0.1",
+      ~c"-setcookie",
+      to_charlist(:erlang.get_cookie())
+    ]
   end
 
   defp allow_boot(host) do
