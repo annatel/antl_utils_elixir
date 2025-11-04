@@ -23,7 +23,7 @@ defmodule AntlUtilsElixir.MixProject do
 
   defp deps do
     [
-      {:req, "~> 0.5", only: [:dev, :test]},
+      {:req, "~> 0.5"},
       {:test_server, "~> 0.1", only: [:dev, :test]},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
