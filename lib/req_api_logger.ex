@@ -7,25 +7,23 @@ defmodule AntlUtilsElixir.ReqApiLogger do
     req
     |> Request.register_options([:log_level, :api_name])
     |> Request.merge_options(opts)
+    |> Request.prepend_request_steps(init_log_api: &set_request_id_and_start_time/1)
     |> Request.append_request_steps(log_api: &log/1)
-    |> Request.prepend_response_steps(log_api: &log/1)
-    |> Request.prepend_error_steps(log_api: &log/1)
+    |> Request.append_response_steps(log_api: &log/1)
+    |> Request.append_error_steps(log_api: &log/1)
     |> tap(&(api_name(&1) || raise("please set :api_name option")))
   end
 
   defp log(what) do
     what
-    |> maybe_set_request_id_and_start_time()
     |> tap(&Logger.log(log_level(&1), format(&1), metadata(&1)))
   end
 
-  defp maybe_set_request_id_and_start_time(%Request{} = req) do
+  defp set_request_id_and_start_time(%Request{} = req) do
     req
     |> Request.put_private(:api_request_id, generate_request_id())
     |> Request.put_private(:api_start_time, System.monotonic_time())
   end
-
-  defp maybe_set_request_id_and_start_time(what = {_, _}), do: what
 
   defp log_level({req, _}), do: log_level(req)
   defp log_level(req), do: Request.get_option(req, :log_level, :debug)

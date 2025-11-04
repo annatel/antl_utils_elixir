@@ -54,7 +54,7 @@ defmodule AntlUtilsElixir.ReqApiLoggerTest do
 
     test "logs response status, duration, url, headers, trailers and body" do
       assert capture_log(fn -> req_with_logger() end) =~
-               ~r/Received 200 in [[:digit:]]+ms from #{url()} headers=%{"cache-control" => \["max-age=0, private, must-revalidate"\], "content-length" => \["[[:digit:]]+"\], "content-type" => \["text\/html"\], "date" => \["[^"]+"\], "server" => \["[^"]+"\]} trailers=%{} body="test_response_body"/
+               ~r/Received 200 in [[:digit:]]+ms from #{url()} headers=%{"cache-control" => \["max-age=0, private, must-revalidate"\], "content-type" => \["text\/html"\], "date" => \["[^"]+"\], "server" => \["[^"]+"\]} trailers=%{} body="test_response_body"/
     end
 
     test "logs api_name and request_id in response metadata" do
