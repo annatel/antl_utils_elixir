@@ -1,4 +1,4 @@
-VERSION 0.5
+VERSION 0.6
 
 elixir-base:
     FROM --platform=$BUILDPLATFORM elixir:1.18.4-otp-27-alpine
@@ -10,6 +10,7 @@ deps:
     ARG MIX_ENV
     FROM +elixir-base
     ENV MIX_ENV="$MIX_ENV"
+    COPY --dir config .
     COPY mix.exs .
     COPY mix.lock .
     RUN mix deps.get --only "$MIX_ENV"
@@ -26,7 +27,7 @@ lint:
 test:
     FROM --build-arg MIX_ENV="test" +deps
     COPY --dir lib test .
-    RUN mix test --cover
+    RUN mix test --warnings-as-errors
 
 check-tag:
     ARG TAG
