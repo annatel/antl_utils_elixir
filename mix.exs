@@ -1,7 +1,7 @@
 defmodule AntlUtilsElixir.MixProject do
   use Mix.Project
 
-  @version "1.5.0"
+  @version "1.6.0"
 
   def project do
     [
@@ -23,6 +23,8 @@ defmodule AntlUtilsElixir.MixProject do
 
   defp deps do
     [
+      {:req, "~> 0.5", only: [:dev, :test]},
+      {:test_server, "~> 0.1", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end

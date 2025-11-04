@@ -70,14 +70,18 @@ defmodule AntlUtilsElixir.RpcClientTest do
       end
 
       try do
-        assert capture_log(fn -> RpcClient.call!(@node, Kernel, :unexisting_function, [:atom]) end) =~
+        assert capture_log(fn ->
+                 RpcClient.call!(@node, Kernel, :unexisting_function, [:atom])
+               end) =~
                  "#{@node} - Elixir.Kernel - unexisting_function - [:atom]"
       rescue
         _ -> :ok
       end
 
       try do
-        assert capture_log(fn -> RpcClient.call!(@node, Kernel, :unexisting_function, [:atom]) end) =~
+        assert capture_log(fn ->
+                 RpcClient.call!(@node, Kernel, :unexisting_function, [:atom])
+               end) =~
                  "{:badrpc, {:EXIT, "
       rescue
         _ -> :ok
