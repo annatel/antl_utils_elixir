@@ -7,7 +7,7 @@ defmodule AntlUtilsElixir.MixProject do
     [
       app: :antl_utils_elixir,
       version: @version,
-      elixir: "~> 1.8",
+      elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       description: description(),
       package: package(),

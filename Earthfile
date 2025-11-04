@@ -1,7 +1,7 @@
 VERSION 0.5
 
 elixir-base:
-    FROM elixir:1.12.2-alpine
+    FROM --platform=$BUILDPLATFORM elixir:1.18.4-otp-27-alpine
     WORKDIR /app
     RUN apk add --no-progress --update openssh-client git build-base
     RUN mix local.rebar --force && mix local.hex --force
