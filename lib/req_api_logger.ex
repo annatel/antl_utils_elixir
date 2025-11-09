@@ -5,7 +5,7 @@ defmodule AntlUtilsElixir.ReqApiLogger do
 
   def attach(%Request{} = req, opts \\ []) do
     req
-    |> Request.register_options([:log_level, :api_name])
+    |> Request.register_options([:log_level, :api_name, :hide_request_keys, :hide_response_keys])
     |> Request.merge_options(opts)
     |> Request.prepend_request_steps(init_log_api: &set_request_id_and_start_time/1)
     |> Request.append_request_steps(log_api: &log/1)
@@ -40,19 +40,27 @@ defmodule AntlUtilsElixir.ReqApiLogger do
   end
 
   defp format(req = %Request{}) do
+    hide_list =
+      Request.get_option(req, :hide_request_keys, [])
+      |> Enum.map(&to_string/1)
+
     method = "#{req.method}" |> String.upcase()
     url = "#{req.url}"
     headers = inspect(req.headers)
-    body = inspect(req.body)
+    body = format_request_body(req, hide_list)
     "Sent #{method} #{url} headers=#{headers} body=#{body}"
   end
 
   defp format({req, %Response{} = resp}) do
+    hide_list =
+      Request.get_option(req, :hide_response_keys, [])
+      |> Enum.map(&to_string/1)
+
     status = "#{resp.status}"
     url = "#{req.url}"
     headers = inspect(resp.headers)
     trailers = inspect(resp.trailers)
-    body = inspect(resp.body)
+    body = format_response_body(resp, hide_list)
     duration = ms_duration(req)
 
     "Received #{status} in #{duration}ms from #{url} headers=#{headers} trailers=#{trailers} body=#{body}"
@@ -64,6 +72,37 @@ defmodule AntlUtilsElixir.ReqApiLogger do
     duration = ms_duration(req)
     "API Error in #{duration}ms for #{url} : #{error}"
   end
+
+  defp format_request_body(%Request{} = req, hide_list) do
+    case Request.get_header(req, "content-type") do
+      ["application/json" <> _] ->
+        req.body
+        |> Jason.decode!()
+        |> hide(hide_list)
+
+      ["application/x-www-form-urlencoded"] ->
+        req.body
+        |> URI.decode_query()
+        |> hide(hide_list)
+
+      _ ->
+        req.body
+    end
+    |> inspect()
+  end
+
+  defp format_response_body(resp, hide_list), do: hide(resp.body, hide_list) |> inspect()
+
+  defp hide(%{} = map, hide) when is_list(hide),
+    do: map |> Enum.map(&hide(&1, hide)) |> Enum.into(%{})
+
+  defp hide(list, hide) when is_list(list) and is_list(hide),
+    do: list |> Enum.map(&hide(&1, hide))
+
+  defp hide({k, v}, hide) when is_list(hide),
+    do: if(k in hide, do: {k, "[HIDDEN]"}, else: {k, hide(v, hide)})
+
+  defp hide(thing, _), do: thing
 
   defp generate_request_id do
     binary = <<
