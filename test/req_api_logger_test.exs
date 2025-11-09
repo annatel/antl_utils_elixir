@@ -67,6 +67,16 @@ defmodule AntlUtilsElixir.ReqApiLoggerTest do
       assert id1 == id2
     end
 
+    test "be able to hide request headers" do
+      TestServer.add("/", via: :post)
+
+      assert capture_log(fn ->
+               req_new_with_logger(url())
+               |> Req.post(hide_request_headers: ["user-agent"])
+             end) =~
+               ~r/headers=%{"accept-encoding" => \["gzip"\], "user-agent" => "\[HIDDEN\]"}/
+    end
+
     test "be able to hide json request data" do
       TestServer.add("/", via: :post)
 

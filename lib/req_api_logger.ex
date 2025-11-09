@@ -5,7 +5,13 @@ defmodule AntlUtilsElixir.ReqApiLogger do
 
   def attach(%Request{} = req, opts \\ []) do
     req
-    |> Request.register_options([:log_level, :api_name, :hide_request_keys, :hide_response_keys])
+    |> Request.register_options([
+      :log_level,
+      :api_name,
+      :hide_request_keys,
+      :hide_request_headers,
+      :hide_response_keys
+    ])
     |> Request.merge_options(opts)
     |> Request.prepend_request_steps(init_log_api: &set_request_id_and_start_time/1)
     |> Request.append_request_steps(log_api: &log/1)
@@ -40,14 +46,19 @@ defmodule AntlUtilsElixir.ReqApiLogger do
   end
 
   defp format(req = %Request{}) do
-    hide_list =
+    hide_keys =
       Request.get_option(req, :hide_request_keys, [])
+      |> Enum.map(&to_string/1)
+
+    hide_headers =
+      Request.get_option(req, :hide_request_headers, [])
       |> Enum.map(&to_string/1)
 
     method = "#{req.method}" |> String.upcase()
     url = "#{req.url}"
-    headers = inspect(req.headers)
-    body = format_request_body(req, hide_list)
+
+    headers = format_request_headers(req, hide_headers)
+    body = format_request_body(req, hide_keys)
     "Sent #{method} #{url} headers=#{headers} body=#{body}"
   end
 
@@ -91,7 +102,11 @@ defmodule AntlUtilsElixir.ReqApiLogger do
     |> inspect()
   end
 
-  defp format_response_body(resp, hide_list), do: hide(resp.body, hide_list) |> inspect()
+  defp format_request_headers(req, hide_list), do: hide_and_inspect(req.headers, hide_list)
+
+  defp format_response_body(resp, hide_list), do: hide_and_inspect(resp.body, hide_list)
+
+  defp hide_and_inspect(thing, hide_list), do: hide(thing, hide_list) |> inspect()
 
   defp hide(%{} = map, hide) when is_list(hide),
     do: map |> Enum.map(&hide(&1, hide)) |> Enum.into(%{})
