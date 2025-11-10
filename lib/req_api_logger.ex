@@ -10,7 +10,8 @@ defmodule AntlUtilsElixir.ReqApiLogger do
       :api_name,
       :hide_request_keys,
       :hide_request_headers,
-      :hide_response_keys
+      :hide_response_keys,
+      :hide_response_headers
     ])
     |> Request.merge_options(opts)
     |> Request.prepend_request_steps(init_log_api: &set_request_id_and_start_time/1)
@@ -56,22 +57,25 @@ defmodule AntlUtilsElixir.ReqApiLogger do
 
     method = "#{req.method}" |> String.upcase()
     url = "#{req.url}"
-
     headers = format_request_headers(req, hide_headers)
     body = format_request_body(req, hide_keys)
     "Sent #{method} #{url} headers=#{headers} body=#{body}"
   end
 
   defp format({req, %Response{} = resp}) do
-    hide_list =
+    hide_keys =
       Request.get_option(req, :hide_response_keys, [])
+      |> Enum.map(&to_string/1)
+
+    hide_headers =
+      Request.get_option(req, :hide_response_headers, [])
       |> Enum.map(&to_string/1)
 
     status = "#{resp.status}"
     url = "#{req.url}"
-    headers = inspect(resp.headers)
+    headers = format_response_headers(resp, hide_headers)
     trailers = inspect(resp.trailers)
-    body = format_response_body(resp, hide_list)
+    body = format_response_body(resp, hide_keys)
     duration = ms_duration(req)
 
     "Received #{status} in #{duration}ms from #{url} headers=#{headers} trailers=#{trailers} body=#{body}"
@@ -105,6 +109,8 @@ defmodule AntlUtilsElixir.ReqApiLogger do
   defp format_request_headers(req, hide_list), do: hide_and_inspect(req.headers, hide_list)
 
   defp format_response_body(resp, hide_list), do: hide_and_inspect(resp.body, hide_list)
+
+  defp format_response_headers(resp, hide_list), do: hide_and_inspect(resp.headers, hide_list)
 
   defp hide_and_inspect(thing, hide_list), do: hide(thing, hide_list) |> inspect()
 

@@ -111,6 +111,16 @@ defmodule AntlUtilsElixir.ReqApiLoggerTest do
       assert log =~ ~r/\[HIDDEN\].*\[HIDDEN\]/
     end
 
+    test "be able to hide response headers" do
+      TestServer.add("/", via: :post)
+
+      assert capture_log(fn ->
+               req_new_with_logger(url())
+               |> Req.post(hide_response_headers: ["cache-control", "date"])
+             end) =~
+               ~r/headers=%{"cache-control" => "\[HIDDEN\]", "content-type" => \["text\/html"\], "date" => "\[HIDDEN\]", "server" => \["[^"]+"\]}/
+    end
+
     test "be able to hide json response data" do
       TestServer.add("/",
         via: :get,
