@@ -162,19 +162,19 @@ defmodule AntlUtilsElixir.ReqApiLoggerTest do
       assert id1 == id2
     end
 
-    test "default logging level is :debug" do
-      Logger.configure(level: :debug)
-      assert capture_log(fn -> req_run_with_logger() end) =~ ~r/Sent GET/
+    test "default logging level is :info" do
       Logger.configure(level: :info)
+      assert capture_log(fn -> req_run_with_logger() end) =~ ~r/Sent GET/
+      Logger.configure(level: :warning)
       assert capture_log(fn -> req_run_with_logger() end) == ""
       Logger.configure(level: :debug)
     end
 
-    test "each logger can have its own logging level" do
-      Logger.configure(level: :info)
-      assert capture_log(fn -> req_run_with_logger(log_level: :info) end) =~ ~r/Sent GET/
+    test "log level is configurable" do
       Logger.configure(level: :warning)
-      assert capture_log(fn -> req_run_with_logger(log_level: :info) end) == ""
+      assert capture_log(fn -> req_run_with_logger(log_level: :warning) end) =~ ~r/Sent GET/
+      Logger.configure(level: :error)
+      assert capture_log(fn -> req_run_with_logger(log_level: :warning) end) == ""
       Logger.configure(level: :debug)
     end
   end

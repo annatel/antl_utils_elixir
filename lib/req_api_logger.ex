@@ -1,8 +1,47 @@
 defmodule AntlUtilsElixir.ReqApiLogger do
+  @moduledoc """
+  Req Logging plugin tailored for API clients
+  """
   require Logger
   alias Req.Request
   alias Req.Response
 
+  @default_log_level :info
+
+  @doc """
+  Installs request, response, and error steps that log API calls
+
+  ## Options
+
+    * `:api_name` (mandatory) - name of the api; will be available to the app as metadata
+    * `:log_level` (default `:info`) - level at which then logging is done
+    * `:hide_request_keys` (default `[]`) - list of request keys that should be hidden (for json or form requests)
+    * `:hide_response_keys` (default `[]`) - list of response keys that should be hidden (for json responses)
+    * `:hide_request_headers` (default `[]`) - list of request headers that should be hidden
+    * `:hide_response_headers` (default `[]`) - list of response headers (and trailers) that should be hidden
+
+  These same options can also be passed through `Req` options to change the
+  behavior on a per-request basis.
+
+  ## Examples
+
+  By default, log requests, responses and errors at level :debug with name "my_api" in metadata
+
+      req = Req.new() |> ReqTelemetry.attach(api_name: "my_api", log_level: :debug)
+
+      # send request, log with options passed to attach/1
+      Req.get!(req, url: "https://example.org")
+
+      # on this request only, log at level :warning, while hiding keys from the request query and response headers
+      Req.get!(req,
+        json: %{login: "foo", password: "bar"}
+        url: "https://example.org",
+        log_level: :warning,
+        hide_request_keys: ["password"],
+        hide_response_headers: ["x-private-header"]
+      )
+
+  """
   def attach(%Request{} = req, opts \\ []) do
     req
     |> Request.register_options([
@@ -33,7 +72,7 @@ defmodule AntlUtilsElixir.ReqApiLogger do
   end
 
   defp log_level({req, _}), do: log_level(req)
-  defp log_level(req), do: Request.get_option(req, :log_level, :debug)
+  defp log_level(req), do: Request.get_option(req, :log_level, @default_log_level)
 
   defp metadata({req, _}), do: metadata(req)
   defp metadata(req), do: [api_name: api_name(req), api_request_id: request_id(req)]
