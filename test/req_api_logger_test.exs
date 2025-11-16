@@ -178,4 +178,32 @@ defmodule AntlUtilsElixir.ReqApiLoggerTest do
       Logger.configure(level: :debug)
     end
   end
+
+  defp req_get_with_json_header(body) do
+    Req.new(url: url(), headers: [{"content-type", "application/json"}], body: body)
+    |> ReqApiLogger.attach(api_name: :test)
+    |> Req.get()
+  end
+
+  describe "ReqApiLogger regression tests : don't crash on invalid JSON request" do
+    setup do
+      TestServer.add("/")
+      :ok
+    end
+
+    test "nil body" do
+      assert capture_log(fn -> req_get_with_json_header(nil) end) =~
+               ~r/body=nil/
+    end
+
+    test "empty body" do
+      assert capture_log(fn -> req_get_with_json_header("") end) =~
+               ~r/body=""/
+    end
+
+    test "malformed json" do
+      assert capture_log(fn -> req_get_with_json_header("{") end) =~
+               ~r/body="{"/
+    end
+  end
 end
