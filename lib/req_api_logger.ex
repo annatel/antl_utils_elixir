@@ -27,7 +27,7 @@ defmodule AntlUtilsElixir.ReqApiLogger do
 
   By default, log requests, responses and errors at level :debug with name "my_api" in metadata
 
-      req = Req.new() |> ReqTelemetry.attach(api_name: "my_api", log_level: :debug)
+      req = Req.new() |> ReqApiLogger.attach(api_name: "my_api", log_level: :debug)
 
       # send request, log with options passed to attach/1
       Req.get!(req, url: "https://example.org")
