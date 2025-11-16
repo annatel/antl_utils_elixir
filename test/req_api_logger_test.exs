@@ -36,9 +36,9 @@ defmodule AntlUtilsElixir.ReqApiLoggerTest do
                ~r/Sent GET #{url()} headers=%{"accept-encoding" => \["gzip"\], "user-agent" => \["req\/[0-9.]+"\]} body="test_request_body"/
     end
 
-    test "logs api_name and request_id in request metadata" do
+    test "logs api_name, log and request_id in request metadata" do
       assert capture_log(fn -> req_run_with_logger(api_name: "foobarbaz") end) =~
-               ~r/api_name=foobarbaz api_request_id=[^ ]+ Sent GET/
+               ~r/api_name=foobarbaz log=req_api api_request_id=[^ ]+ Sent GET/
     end
 
     test "request_id changes for each request" do
@@ -54,9 +54,9 @@ defmodule AntlUtilsElixir.ReqApiLoggerTest do
                ~r/Received 200 in [[:digit:]]+ms from #{url()} headers=%{"cache-control" => \["max-age=0, private, must-revalidate"\], "content-type" => \["text\/html"\], "date" => \["[^"]+"\], "server" => \["[^"]+"\]} trailers=%{} body="test_response_body"/
     end
 
-    test "logs api_name and request_id in response metadata" do
+    test "logs api_name, log and request_id in response metadata" do
       assert capture_log(fn -> req_run_with_logger(api_name: "foobarbaz") end) =~
-               ~r/api_name=foobarbaz api_request_id=[^ ]+ Received 200/
+               ~r/api_name=foobarbaz log=req_api api_request_id=[^ ]+ Received 200/
     end
 
     test "request_id is the same for request and response" do
@@ -151,7 +151,7 @@ defmodule AntlUtilsElixir.ReqApiLoggerTest do
 
     test "logs api_name and request_id in error metadata" do
       assert capture_log(fn -> req_error_with_logger() end) =~
-               ~r/api_name=test api_request_id=[^ ]+ API Error /
+               ~r/api_name=test log=req_api api_request_id=[^ ]+ API Error /
     end
 
     test "request_id is the same for request and error" do

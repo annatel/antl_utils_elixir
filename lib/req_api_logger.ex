@@ -7,6 +7,7 @@ defmodule AntlUtilsElixir.ReqApiLogger do
   alias Req.Response
 
   @default_log_level :info
+  @log "req_api"
 
   @doc """
   Installs request, response, and error steps that log API calls
@@ -75,7 +76,7 @@ defmodule AntlUtilsElixir.ReqApiLogger do
   defp log_level(req), do: Request.get_option(req, :log_level, @default_log_level)
 
   defp metadata({req, _}), do: metadata(req)
-  defp metadata(req), do: [api_name: api_name(req), api_request_id: request_id(req)]
+  defp metadata(req), do: [api_name: api_name(req), log: @log, api_request_id: request_id(req)]
 
   defp api_name(req), do: Request.get_option(req, :api_name)
   defp request_id(req), do: Request.get_private(req, :api_request_id)
