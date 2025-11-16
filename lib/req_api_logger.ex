@@ -130,10 +130,11 @@ defmodule AntlUtilsElixir.ReqApiLogger do
   defp format_request_body(%Request{} = req, hide_list) do
     case Request.get_header(req, "content-type") do
       ["application/json" <> _] ->
-        req.body &&
-          req.body
-          |> Jason.decode!()
-          |> hide(hide_list)
+        with {:ok, decoded} <-  Jason.decode("#{req.body}") do
+          hide(decoded, hide_list)
+        else
+          _ -> req.body
+        end
 
       ["application/x-www-form-urlencoded"] ->
         req.body
